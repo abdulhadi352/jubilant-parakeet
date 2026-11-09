@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meezan Digital & Corporate Banking | Stripe Fintech Platform</title>
+  <style>
+    :root {
+      --meezan-purple: #4a154b;
+      --meezan-dark-purple: #340c35;
+      --meezan-gold: #d4af37;
+      --meezan-gold-hover: #b89628;
+      --bg-gray: #f4f5f7;
+      --card-bg: #ffffff;
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --success-green: #059669;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-gray); color: var(--text-dark); line-height: 1.5; padding-bottom: 60px; }
+
+    .top-bar {
+      background-color: var(--meezan-dark-purple); color: #fff;
+      padding: 6px 2rem; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center;
+    }
+    .top-bar span { color: var(--meezan-gold); font-weight: 600; }
+
+    header {
+      background-color: var(--meezan-purple); color: white;
+      padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15); border-bottom: 3px solid var(--meezan-gold);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo {
+      background: var(--meezan-gold); color: var(--meezan-dark-purple);
+      font-weight: 900; font-size: 1.3rem; padding: 6px 14px; border-radius: 4px; letter-spacing: 1px;
+    }
+    .brand-title { font-size: 1.2rem; font-weight: 700; letter-spacing: 0.5px; }
+    .nav-user { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; }
+    .user-badge { background: rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.4); }
+
+    .container { max-width: 1250px; margin: 1.5rem auto; padding: 0 1rem; }
+    .welcome-banner {
+      background: #fff; border-left: 5px solid var(--meezan-purple);
+      padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+    }
+    .welcome-banner h2 { font-size: 1.25rem; color: var(--meezan-purple); }
+    .welcome-banner p { font-size: 0.85rem; color: var(--text-muted); }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+    .summary-card {
+      background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);
+      padding: 1.25rem; box-shadow: 0 2px 5px rgba(0,0,0,0.04); position: relative; overflow: hidden;
+    }
+    .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--meezan-purple); }
+    .summary-card.gold::before { background: var(--meezan-gold); }
+    .card-label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+    .card-amount { font-size: 1.75rem; font-weight: 700; color: var(--meezan-purple); margin: 8px 0; }
+    .card-subtext { font-size: 0.8rem; color: var(--success-green); font-weight: 600; }
+
+    .dashboard-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+    @media (max-width: 900px) { .dashboard-layout { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);
+      padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    }
+    .panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 0.75rem; border-bottom: 2px solid var(--bg-gray); margin-bottom: 1.25rem;
+    }
+    .panel-header h3 { font-size: 1.05rem; color: var(--meezan-purple); font-weight: 700; }
+
+    .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+    .btn-action {
+      background: var(--bg-gray); border: 1px solid var(--border-color); border-radius: 6px;
+      padding: 1.1rem 0.8rem; text-align: center; cursor: pointer; transition: all 0.2s ease;
+      font-weight: 600; font-size: 0.85rem; color: var(--meezan-purple); display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .btn-action:hover {
+      background: var(--meezan-purple); color: #fff; border-color: var(--meezan-purple); transform: translateY(-2px);
+    }
+    .btn-action span { font-size: 1.4rem; }
+
+    .cards-row { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 8px; }
+    .meezan-card {
+      min-width: 280px; height: 170px; border-radius: 12px; padding: 1.25rem;
+      background: linear-gradient(135deg, var(--meezan-purple), var(--meezan-dark-purple));
+      color: #fff; border: 1px solid var(--meezan-gold); box-shadow: 0 6px 12px rgba(74, 21, 75, 0.25);
+      display: flex; flex-direction: column; justify-content: space-between; position: relative;
+    }
+    .meezan-card::after {
+      content: 'Meezan Visa'; position: absolute; top: 12px; right: 15px;
+      font-size: 0.7rem; color: var(--meezan-gold); letter-spacing: 1px; font-weight: 700;
+    }
+    .card-chip { width: 36px; height: 26px; background: #e0b034; border-radius: 4px; margin-bottom: 8px; }
+    .card-num { font-size: 1.15rem; letter-spacing: 2px; font-weight: 600; font-family: monospace; }
+    .card-foot { display: flex; justify-content: space-between; align-items: flex-end; font-size: 0.8rem; }
+
+    .btn-gold {
+      background: var(--meezan-gold); color: var(--meezan-dark-purple); border: none;
+      padding: 8px 16px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s;
+    }
+    .btn-gold:hover { background: var(--meezan-gold-hover); }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); align-items: center; justify-content: center; z-index: 999; }
+    .modal.active { display: flex; }
+    .modal-content { background: #fff; border-radius: 8px; width: 100%; max-width: 460px; border-top: 5px solid var(--meezan-purple); padding: 1.5rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.9rem; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--meezan-purple); }
+    .submit-btn { width: 100%; padding: 11px; background: var(--meezan-purple); color: #fff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+    .submit-btn:hover { background: var(--meezan-dark-purple); }
+
+    .tx-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .tx-table th, .tx-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    .tx-table th { background: var(--bg-gray); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+    .tx-status { padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; background: #d1fae5; color: #065f46; display: inline-block; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div>Meezan Internet Banking Services | <span>Islamic Financial Rails</span></div>
+    <div>Local IP: 127.0.0.1 | Status: <span>LIVE CONNECTED</span></div>
+  </div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">MEEZAN</div>
+      <div class="brand-title">Digital & Corporate Banking</div>
+    </div>
+    <div class="nav-user">
+      <div class="user-badge">Account: <strong>PK36 MEZN 0012 8492 01</strong></div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="welcome-banner">
+      <div>
+        <h2>Assalamu Alaikum</h2>
+        <p>Manage your Pakistani commercial accounts, 1Link clearing payouts, and Stripe global virtual card issuance.</p>
+      </div>
+      <button class="btn-gold" onclick="issueNewCard()">+ Issue Virtual Card</button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card gold">
+        <div class="card-label">Meezan Main PKR Account</div>
+        <div class="card-amount">PKR 2,450,000.00</div>
+        <div class="card-subtext">Available for Local 1Link & Wallet Clearing</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">Stripe Treasury Reserve (USD)</div>
+        <div class="card-amount">$48,250.00</div>
+        <div class="card-subtext">Global Settlement Ledger</div>
+      </div>
+      <div class="summary-card">
+        <div class="card-label">Active Virtual Cards</div>
+        <div class="card-amount" id="card-count">1</div>
+        <div class="card-subtext">Stripe Issuing Multi-Currency</div>
+      </div>
+    </div>
+
+    <div class="dashboard-layout">
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Local & Cross-Border Payout Services</h3>
+          </div>
+          <div class="action-grid">
+            <div class="btn-action" onclick="openModal('hbl')">
+              <span>🏛️</span> HBL Account Wire
+            </div>
+            <div class="btn-action" onclick="openModal('meezan')">
+              <span>🕌</span> Meezan Transfer
+            </div>
+            <div class="btn-action" onclick="openModal('easypaisa')">
+              <span>📱</span> Easypaisa Wallet
+            </div>
+            <div class="btn-action" onclick="openModal('jazzcash')">
+              <span>📲</span> JazzCash Wallet
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Issued Digital Virtual Cards</h3>
+            <button class="btn-gold" style="padding:4px 10px; font-size:0.8rem;" onclick="issueNewCard()">+ New Card</button>
+          </div>
+          <div class="cards-row" id="cards-container">
+            <div class="meezan-card">
+              <div>
+                <div class="card-chip"></div>
+                <small>Corporate Platinum Card</small>
+                <div class="card-num">•••• •••• •••• 8912</div>
+              </div>
+              <div class="card-foot">
+                <div>EXP: 12/29<br><strong>ACTIVE</strong></div>
+                <div style="color:var(--meezan-gold);">USD $5,000 Limit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Recent Clearing Ledger</h3>
+          </div>
+          <table class="tx-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tx-ledger">
+              <tr>
+                <td><strong>Easypaisa Payout</strong><br><small style="color:var(--text-muted)">03001234567</small></td>
+                <td><strong style="color:var(--meezan-purple)">PKR 15,000</strong></td>
+                <td><span class="tx-status">Clearing</span></td>
+              </tr>
+              <tr>
+                <td><strong>HBL IBAN Transfer</strong><br><small style="color:var(--text-muted)">PK36HABB00...</small></td>
+                <td><strong style="color:var(--meezan-purple)">PKR 120,000</strong></td>
+                <td><span class="tx-status">Success</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="panel-header" style="margin-bottom:1rem;">
+        <h3 id="modal-title">Transfer Funds</h3>
+      </div>
+      <div id="modal-content"></div>
+      <button class="submit-btn" style="background:#6b7280; margin-top:8px;" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    let cardCount = 1;
+
+    async function issueNewCard() {
+      try {
+        const res = await fetch('/api/issue-card', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: 'Abdul Hadi' })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          cardCount++;
+          document.getElementById('card-count').innerText = cardCount;
+          const container = document.getElementById('cards-container');
+          const newCard = document.createElement('div');
+          newCard.className = 'meezan-card';
+          newCard.innerHTML = `
+            <div>
+              <div class="card-chip"></div>
+              <small>Virtual Card (${data.card.id})</small>
+              <div class="card-num">•••• •••• •••• ${data.card.last4 || Math.floor(1000 + Math.random() * 9000)}</div>
+            </div>
+            <div class="card-foot">
+              <div>EXP: 08/30<br><strong>ACTIVE</strong></div>
+              <div style="color:var(--meezan-gold);">USD $5,000 Limit</div>
+            </div>
+          `;
+          container.appendChild(newCard);
+          alert('Meezan Virtual Card issued successfully!');
+        }
+      } catch (err) {
+        alert('Error issuing card: ' + err.message);
+      }
+    }
+
+    function openModal(type) {
+      const modal = document.getElementById('modal');
+      const title = document.getElementById('modal-title');
+      const content = document.getElementById('modal-content');
+      modal.classList.add('active');
+
+      let bankName = 'HBL';
+      let accountLabel = 'IBAN Number (e.g. PK36HABB...)';
+      let placeholder = 'PK36HABB0000123456789012';
+
+      if (type === 'meezan') {
+        bankName = 'Meezan Bank';
+        accountLabel = 'Meezan Account / IBAN';
+        placeholder = 'PK36MEZN0000123456789012';
+      } else if (type === 'easypaisa') {
+        bankName = 'Easypaisa';
+        accountLabel = 'Mobile Account Number';
+        placeholder = '03XXXXXXXXX';
+      } else if (type === 'jazzcash') {
+        bankName = 'JazzCash';
+        accountLabel = 'Mobile Account Number';
+        placeholder = '03XXXXXXXXX';
+      }
+
+      title.innerText = `Fund Transfer via ${bankName}`;
+      content.innerHTML = `
+        <div class="form-group">
+          <label>Selected Destination Rail</label>
+          <input type="text" id="target-bank" value="${bankName}" readonly style="background:#f4f5f7;">
+        </div>
+        <div class="form-group">
+          <label>${accountLabel}</label>
+          <input type="text" id="target-account" placeholder="${placeholder}">
+        </div>
+        <div class="form-group">
+          <label>Transfer Amount (PKR)</label>
+          <input type="number" id="target-amount" placeholder="25000">
+        </div>
+        <button class="submit-btn" onclick="executeTransfer('${type}')">Confirm & Send Transfer</button>
+      `;
+    }
+
+    async function executeTransfer(type) {
+      const bankName = document.getElementById('target-bank').value;
+      const accountNumber = document.getElementById('target-account').value;
+      const amount = document.getElementById('target-amount').value;
+
+      if (!accountNumber || !amount) {
+        alert('Please fill in all details.');
+        return;
+      }
+
+      const isWallet = (type === 'easypaisa' || type === 'jazzcash');
+
+      const response = await fetch('/api/pakistan-transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          destinationType: isWallet ? 'wallet' : 'bank', 
+          bankName, 
+          accountNumber, 
+          amount 
+        })
+      });
+
+      const data = await response.json();
+
+      const ledger = document.getElementById('tx-ledger');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><strong>${bankName} Transfer</strong><br><small style="color:var(--text-muted)">${accountNumber}</small></td>
+        <td><strong style="color:var(--meezan-purple)">PKR ${Number(amount).toLocaleString()}</strong></td>
+        <td><span class="tx-status">Success</span></td>
+      `;
+      ledger.insertBefore(row, ledger.firstChild);
+
+      alert(data.message);
+      closeModal();
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+  </script>
+</body>
+</html>
